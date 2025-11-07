@@ -1,260 +1,370 @@
-EVOLUTION STRATEGIES FOR FUNCTION OPTIMIZATION
-Master in Artificial Intelligence - Evolutionary Computation
-Date: November 2025
+# Evolution Strategies for Function Optimization
 
-===========================================
-QUICK START
-===========================================
+**Master in Artificial Intelligence - Evolutionary Computation**  
+**Date:** November 2025
 
-1. Create and activate a virtual environment (recommended) and install dependencies
+---
 
-   macOS / zsh (recommended):
+## 📋 Table of Contents
 
-   ```bash
-   # create a lightweight venv in the project folder
-   python3 -m venv .venv
+- [Quick Start](#-quick-start)
+- [Project Overview](#-project-overview)
+- [Project Structure](#-project-structure)
+- [Algorithm Details](#-algorithm-details)
+- [Experimental Design](#-experimental-design)
+- [Results & Visualization](#-results--visualization)
+- [Customization Guide](#-customization-guide)
+- [Troubleshooting](#-troubleshooting)
+- [References](#-references)
 
-   # activate the virtual environment (zsh)
-   source .venv/bin/activate
+---
 
-   # install required packages from the requirements file
-   pip install --upgrade pip
-   pip install -r requirements.txt
-   ```
+## 🚀 Quick Start
 
-   If you prefer to install globally (not recommended), you can instead run:
+### 1. Installation
 
-   ```bash
-   pip install numpy matplotlib pandas
-   ```
+**Recommended: Using Virtual Environment**
+```bash
+# Create a lightweight venv in the project folder
+python3 -m venv .venv
 
-2. Run the experiments:
+# Activate the virtual environment
+# macOS/Linux:
+source .venv/bin/activate
+# Windows:
+.venv\Scripts\activate
 
-   ```bash
-   # while the virtualenv is active
-   python Evolution_strategies.py
-   ```
+# Install required packages
+pip install --upgrade pip
+pip install -r requirements.txt
+```
 
-3. Results will be generated in the same directory (or in the configured output path):
-   - results.csv
-   - summary_statistics.csv
-   - convergence_sphere.png
-   - convergence_rastrigin.png
-   - comparison_boxplots.png
+**Alternative: Global Installation (not recommended)**
+```bash
+pip install numpy matplotlib pandas
+```
 
-Expected runtime: ~5-10 minutes (depending on your CPU and configuration)
+### 2. Run Experiments
+```bash
+# Ensure virtual environment is active
+python main.py
+```
 
-===========================================
-PROJECT DESCRIPTION
-===========================================
+### 3. Check Results
 
-This project implements Evolution Strategies (ES) for continuous function 
-optimization. We compare (μ,λ)-ES and (μ+λ)-ES strategies on different 
-benchmark functions with varying dimensions.
+Results will be generated in the `outputs/` directory:
+- `results.csv` - Detailed results for each run
+- `summary_statistics.csv` - Aggregated statistics
+- `convergence_sphere.png` - Convergence plot for Sphere function
+- `convergence_rastrigin.png` - Convergence plot for Rastrigin function
+- `comparison_boxplots.png` - Comparative analysis plots
 
-IMPLEMENTED ALGORITHMS:
-- (μ,λ)-ES: Selection only from offspring
-- (μ+λ)-ES: Selection from parents + offspring
-- Self-adaptive mutation with learning rates τ and τ'
+**Expected Runtime:** ~5-10 minutes (depending on your CPU)
 
-TEST FUNCTIONS:
-1. Sphere: f(x) = Σx_i² (unimodal, easy)
-2. Rastrigin: multimodal with many local optima (harder)
-3. Rosenbrock: narrow valley (challenging)
-4. Ackley: multimodal with deep valleys
+---
 
-===========================================
-EXPERIMENTAL DESIGN
-===========================================
+## 📖 Project Overview
 
-PARAMETERS TESTED:
-- Functions: Sphere, Rastrigin
-- Dimensions: 10, 20
-- Population sizes: μ=15-30, λ=100-200
-- Strategies: comma, plus
-- Independent runs: 30 per configuration
-- Max generations: 500
-- Target fitness: 1e-6
+This project implements **Evolution Strategies (ES)** for continuous function optimization. We compare **(μ,λ)-ES** and **(μ+λ)-ES** strategies on different benchmark functions with varying dimensions.
 
-PERFORMANCE METRICS:
-- Best fitness achieved
-- Number of generations to convergence
-- Number of function evaluations
-- Execution time
-- Success rate (convergence to target)
+### Implemented Algorithms
 
-===========================================
-FILE STRUCTURE
-===========================================
+- **(μ,λ)-ES:** Selection only from offspring
+- **(μ+λ)-ES:** Selection from both parents and offspring
+- **Self-adaptive mutation** with learning rates τ and τ'
 
-evolution_strategies.py
-├── TestFunctions: Benchmark function suite
-├── EvolutionStrategy: Core ES implementation
-│   ├── Self-adaptive mutation
-│   ├── Parent selection
-│   ├── Strategy selection (comma/plus)
-│   └── Statistics tracking
-├── ExperimentRunner: Manages multiple trials
-└── Visualization functions
+### Benchmark Functions
 
-===========================================
-ALGORITHM DETAILS
-===========================================
+| Function | Type | Difficulty | Global Minimum |
+|----------|------|------------|----------------|
+| **Sphere** | Unimodal | Easy | f(0,...,0) = 0 |
+| **Rastrigin** | Multimodal | Hard | f(0,...,0) = 0 |
+| **Rosenbrock** | Valley-shaped | Medium | f(1,...,1) = 0 |
+| **Ackley** | Multimodal | Hard | f(0,...,0) = 0 |
 
-INITIALIZATION:
-- Population: uniform random in search space
-- Mutation strength σ: 0.5 (initial)
+---
 
-SELF-ADAPTATION:
-- τ = 1/√(2n) where n = dimension
-- τ' = 1/√(2√n)
-- σ_new = σ * exp(τ'*N(0,1) + τ*N(0,1))
-- x_new = x + σ_new * N(0,I)
+## 📁 Project Structure
+```
+evolution_strategies/
+│
+├── README.md                      # This file
+├── requirements.txt               # Python dependencies
+├── main.py                        # Main execution script
+│
+├── src/                           # Source code package
+│   ├── __init__.py               # Package initialization
+│   ├── es_params.py              # ES parameters dataclass
+│   ├── test_functions.py         # Benchmark functions
+│   ├── evolution_strategy.py     # Core ES algorithm
+│   ├── experiment_runner.py      # Experiment management
+│   └── visualization.py          # Plotting functions
+│
+└── outputs/                       # Generated results (auto-created)
+    ├── results.csv
+    ├── summary_statistics.csv
+    ├── convergence_sphere.png
+    ├── convergence_rastrigin.png
+    └── comparison_boxplots.png
+```
 
-SELECTION:
-- (μ,λ): Select μ best from λ offspring only
-- (μ+λ): Select μ best from μ parents + λ offspring
+### Module Descriptions
 
-REPRODUCTION:
-- Each offspring created by mutating random parent
-- No recombination (crossover) used
+| Module | Responsibility |
+|--------|----------------|
+| `es_params.py` | Defines ES configuration parameters |
+| `test_functions.py` | Benchmark optimization functions |
+| `evolution_strategy.py` | Core ES algorithm implementation |
+| `experiment_runner.py` | Manages multiple independent runs |
+| `visualization.py` | Generates plots and visualizations |
+| `main.py` | Orchestrates experiments and output |
 
-===========================================
-RESULTS INTERPRETATION
-===========================================
+---
 
-OUTPUT FILES:
+## 🧬 Algorithm Details
 
-1. results.csv
-   - Detailed results for each run
-   - Columns: function, dimension, mu, lambda, strategy, run, 
-     best_fitness, generations, function_evals, time, converged
+### Initialization
 
-2. summary_statistics.csv
-   - Aggregated statistics per configuration
-   - Mean, std, min for each metric
+- **Population:** Uniformly random in search space
+- **Mutation Strength (σ):** Initial value = 0.5
 
-3. convergence_sphere.png & convergence_rastrigin.png
-   - Fitness evolution over generations
-   - Mean ± std across 30 runs
-   - Log scale for y-axis
+### Self-Adaptation Mechanism
 
-4. comparison_boxplots.png
-   - 4 subplots comparing all configurations:
-     * Best fitness distribution
-     * Generations to convergence
-     * Function evaluations
-     * Success rate
+The mutation strength adapts automatically during evolution:
+```
+τ = 1 / √(2n)          where n = dimension
+τ' = 1 / √(2√n)
 
-===========================================
-STATISTICAL ANALYSIS
-===========================================
+σ_new = σ × exp(τ' × N(0,1) + τ × N(0,1))
+x_new = x + σ_new × N(0,I)
+```
 
-Each configuration is run 30 times to ensure statistical significance.
+### Selection Strategies
 
-METRICS COMPUTED:
+| Strategy | Description | Advantages |
+|----------|-------------|------------|
+| **(μ,λ)-ES** | Select μ best from λ offspring only | More exploratory, avoids stagnation |
+| **(μ+λ)-ES** | Select μ best from μ parents + λ offspring | More stable, preserves best solutions |
+
+### Reproduction
+
+- Each offspring created by mutating a random parent
+- **No recombination** (crossover) is used in this implementation
+
+---
+
+## 🔬 Experimental Design
+
+### Parameters Tested
+
+| Parameter | Values |
+|-----------|--------|
+| **Functions** | Sphere, Rastrigin |
+| **Dimensions** | 10, 20 |
+| **Population Sizes** | μ=15-30, λ=100-200 |
+| **Strategies** | comma, plus |
+| **Independent Runs** | 30 per configuration |
+| **Max Generations** | 500 |
+| **Target Fitness** | 1e-6 |
+
+### Performance Metrics
+
+✅ **Best fitness achieved**  
+✅ **Generations to convergence**  
+✅ **Function evaluations**  
+✅ **Execution time**  
+✅ **Success rate** (% reaching target fitness)
+
+---
+
+## 📊 Results & Visualization
+
+### Output Files
+
+#### 1. `results.csv`
+Detailed results for each individual run.
+
+**Columns:**
+- `function` - Benchmark function name
+- `dimension` - Problem dimension
+- `mu` - Number of parents
+- `lambda` - Number of offspring
+- `strategy` - Selection strategy (comma/plus)
+- `run` - Run number (1-30)
+- `best_fitness` - Best fitness achieved
+- `generations` - Generations to convergence
+- `function_evals` - Total function evaluations
+- `time` - Execution time (seconds)
+- `converged` - Boolean: reached target fitness
+
+#### 2. `summary_statistics.csv`
+Aggregated statistics per configuration (mean, std, min).
+
+#### 3. Convergence Plots
+- **convergence_sphere.png** - Shows fitness evolution over generations for Sphere function
+- **convergence_rastrigin.png** - Shows fitness evolution for Rastrigin function
+- Mean ± standard deviation across 30 runs
+- Log scale on y-axis for better visualization
+
+#### 4. `comparison_boxplots.png`
+Four subplots comparing all configurations:
+- Best fitness distribution
+- Generations to convergence
+- Function evaluations
+- Success rate
+
+### Statistical Analysis
+
+Each configuration is run **30 times** to ensure statistical significance.
+
+**Metrics Computed:**
 - Mean and standard deviation
 - Success rate (% reaching target fitness)
 - Minimum achieved fitness
 - Median performance
 
-COMPARISONS:
+**Comparisons:**
 - (μ,λ) vs (μ+λ) strategies
 - Different dimensions (10 vs 20)
 - Easy (Sphere) vs Hard (Rastrigin) functions
 - Impact of population size
 
-===========================================
-THEORETICAL BACKGROUND
-===========================================
+---
 
-ADVANTAGES OF EVOLUTION STRATEGIES:
-1. No gradient information needed
-2. Self-adaptation of mutation parameters
-3. Robust to noise and discontinuities
-4. Simple and efficient implementation
+## 🎛️ Customization Guide
 
-EXPECTED BEHAVIOR:
-- Sphere: Fast exponential convergence
-- Rastrigin: Slower due to local optima
-- Larger populations: More robust but slower
-- (μ+λ): More stable, preserves best solutions
-- (μ,λ): More exploratory, avoids premature convergence
+### Modify Experiment Configurations
 
-===========================================
-CUSTOMIZATION
-===========================================
-
-To test different configurations, modify the 'experiments' list in main():
-
+Edit the `experiments` list in `main.py`:
+```python
 experiments = [
     {'func': 'sphere', 'dim': 10, 'mu': 15, 'lambda': 100, 'strategy': 'comma'},
-    # Add more configurations here
+    {'func': 'ackley', 'dim': 20, 'mu': 25, 'lambda': 150, 'strategy': 'plus'},
+    # Add your custom configurations here
 ]
+```
 
-Available functions: 'sphere', 'rastrigin', 'rosenbrock', 'ackley'
-Recommended λ/μ ratio: 5-10
+**Available Functions:**
+- `'sphere'`
+- `'rastrigin'`
+- `'rosenbrock'`
+- `'ackley'`
 
-To change number of runs, modify:
-runner = ExperimentRunner(n_runs=30)
+**Recommended λ/μ Ratio:** 5-10
 
-===========================================
-REQUIREMENTS
-===========================================
+### Change Number of Runs
+```python
+runner = ExperimentRunner(n_runs=30)  # Change to 10, 20, etc.
+```
 
-Python version: 3.7+
+### Add New Benchmark Functions
 
-Required packages:
-- numpy >= 1.19.0
-- matplotlib >= 3.3.0
-- pandas >= 1.1.0
+Add to `src/test_functions.py`:
+```python
+@staticmethod
+def your_function(x: np.ndarray) -> float:
+    """Your custom optimization function"""
+    return np.sum(x**4)  # Example
 
-All packages available via pip:
-pip install numpy matplotlib pandas
+# Also add bounds in get_bounds() method
+```
 
-===========================================
-TROUBLESHOOTING
-===========================================
+---
 
-ISSUE: "ModuleNotFoundError"
-SOLUTION: Install missing packages with pip
+## 🔧 Troubleshooting
 
-ISSUE: Experiments too slow
-SOLUTION: Reduce n_runs from 30 to 10-15, or reduce max_generations
+### Common Issues
 
-ISSUE: Memory error
-SOLUTION: Reduce dimension or population size
+#### ❌ `ModuleNotFoundError: No module named 'src'`
 
-ISSUE: Poor convergence
-SOLUTION: Increase max_generations or adjust λ/μ ratio
+**Solution:**
+```bash
+# Make sure you're in the project root directory
+cd path/to/evolution_strategies/
+python main.py
+```
 
-===========================================
-CITATIONS & REFERENCES
-===========================================
+#### ❌ `ModuleNotFoundError: No module named 'numpy'`
 
-Evolution Strategies:
-- Rechenberg, I. (1973). Evolutionsstrategie: Optimierung technischer 
-  Systeme nach Prinzipien der biologischen Evolution.
-- Schwefel, H.-P. (1995). Evolution and Optimum Seeking.
-- Hansen, N., & Ostermeier, A. (2001). Completely derandomized 
-  self-adaptation in evolution strategies. Evolutionary Computation.
+**Solution:**
+```bash
+pip install -r requirements.txt
+```
 
-Benchmark Functions:
-- https://www.sfu.ca/~ssurjano/optimization.html
-- Jamil, M., & Yang, X. S. (2013). A literature survey of benchmark 
-  functions for global optimization problems.
+#### ⏱️ Experiments Running Too Slow
 
-===========================================
-CONTACT & SUBMISSION
-===========================================
+**Solutions:**
+- Reduce `n_runs` from 30 to 10-15
+- Reduce `max_generations` from 500 to 200-300
+- Test on smaller dimensions first
 
-Master in Artificial Intelligence
-Evolutionary Computation - Practical Work
-Delivery: November 10, 2025
+#### 💾 Memory Error
 
-For questions about the implementation, refer to the inline documentation
-in evolution_strategies.py
+**Solutions:**
+- Reduce dimension size
+- Reduce population size (μ and λ)
+- Close other applications
 
-===========================================
-END OF README
-===========================================
+#### 📉 Poor Convergence on Difficult Functions
+
+**Expected Behavior:** Rastrigin and Ackley are intentionally difficult with many local optima.
+
+**Solutions to Improve:**
+- Increase `max_generations`
+- Increase population size (larger λ)
+- Adjust λ/μ ratio (try 7-10)
+- Try different random seeds
+
+---
+
+## 📚 References
+
+### Evolution Strategies
+
+1. **Rechenberg, I. (1973).** *Evolutionsstrategie: Optimierung technischer Systeme nach Prinzipien der biologischen Evolution.* Stuttgart: Frommann-Holzboog.
+
+2. **Schwefel, H.-P. (1995).** *Evolution and Optimum Seeking.* New York: Wiley.
+
+3. **Hansen, N., & Ostermeier, A. (2001).** "Completely derandomized self-adaptation in evolution strategies." *Evolutionary Computation*, 9(2), 159-195.
+
+4. **Beyer, H.-G., & Schwefel, H.-P. (2002).** "Evolution strategies – A comprehensive introduction." *Natural Computing*, 1(1), 3-52.
+
+### Benchmark Functions
+
+5. **Jamil, M., & Yang, X. S. (2013).** "A literature survey of benchmark functions for global optimization problems." *International Journal of Mathematical Modelling and Numerical Optimisation*, 4(2), 150-194.
+
+6. **Surjanovic, S., & Bingham, D.** *Virtual Library of Simulation Experiments: Test Functions and Datasets.* Retrieved from https://www.sfu.ca/~ssurjano/optimization.html
+
+---
+
+## 👥 Contact & Submission
+
+**Master in Artificial Intelligence**  
+**Course:** Evolutionary Computation - Practical Work  
+**Submission Deadline:** November 10, 2025
+
+For technical questions about the implementation, refer to:
+- Inline documentation in source code
+- Module docstrings
+- This README
+
+---
+
+## 📝 License
+
+This project is developed for educational purposes as part of the Master in AI curriculum.
+
+---
+
+## ✨ Features
+
+✅ **Modular Design** - Clean separation of concerns  
+✅ **Easy to Extend** - Add new functions or strategies easily  
+✅ **Well-Documented** - Comprehensive docstrings and comments  
+✅ **Statistical Rigor** - 30 independent runs per configuration  
+✅ **Professional Visualizations** - Publication-quality plots  
+✅ **Reproducible** - Fixed random seed for consistency
+
+---
+
+**Happy Experimenting! 🧪🧬**
