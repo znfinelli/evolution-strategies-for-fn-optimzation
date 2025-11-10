@@ -82,18 +82,18 @@ class EvolutionStrategy:
         """
         Applies self-adaptive mutation (as per lecture slides).
         
-        This implements "Mutation (I)" from the slides:
+        This implements "Mutation (I)" from the "4._Intro_to_ESs (1).pdf" slides:
         - One sigma (mutation strength) per individual.
-        - One learning rate (tau_prime) for the log-normal update.
+        - One learning rate (tau) for the log-normal update.
 
         1. Mutates the strategy parameter (sigma).
         2. Mutates the object variables (x) using the *new* sigma.
         """
         
-        # 1. Mutate sigma: σ' = σ * exp(τ' * N_global(0,1))
-        # We only use the single global learning rate, tau_prime.
-        tau_prime_norm = self.params.tau_prime * np.random.randn()
-        new_sigma = sigma * np.exp(tau_prime_norm)
+        # 1. Mutate sigma: σ' = σ * exp(τ * N_global(0,1))
+        # We only use the single global learning rate, tau.
+        tau_norm = self.params.tau * np.random.randn()
+        new_sigma = sigma * np.exp(tau_norm) # <-- FIX HERE
 
         # Ensure sigma doesn't become too small (a common issue)
         # We can set a floor, e.g., 1e-8, to prevent stalling.

@@ -54,10 +54,8 @@ class ExperimentRunner:
         lower, upper = TestFunctions.get_bounds(func_name, dim)
         
         # 2. Setup Self-Adaptive Parameters
-        # These are the learning rates for sigma, as defined in the
-        # "Mutation (II)" slide (slide 16).
-        tau_prime = 1 / np.sqrt(2 * dim)       # Global learning rate
-        tau = 1 / np.sqrt(2 * np.sqrt(dim))  # Local learning rate
+        # We are using Mutation (I) (one sigma per individual).
+        tau = 1 / np.sqrt(dim)  # Learning rate for Mutation (I)
         
         # 3. Create the parameter object
         params = ESParams(
@@ -65,7 +63,7 @@ class ExperimentRunner:
             lambda_=lambda_,
             dim=dim,
             sigma=0.5,  # Initial mutation strength
-            tau_prime=tau_prime, # Pass only the one we are using
+            tau=tau, # Pass only the one we are using
             max_generations=max_gen,
             target_fitness=1e-6, # Convergence threshold
             strategy=strategy

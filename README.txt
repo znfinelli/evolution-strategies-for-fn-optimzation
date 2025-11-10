@@ -72,7 +72,7 @@ evolution_strategies/
 ------------------------------------------------------
 - Representation: Real-valued vectors for object variables (x) and 
   a single real value for mutation strength (σ).
-- Mutation: Self-adaptive mutation (Mutation (I)) [1].
+- Mutation: Self-adaptive mutation (Mutation (I)).
     - σ' = σ * exp(τ' * N(0,1))
     - x' = x + σ' * N(0,I)
 - Learning Rates:

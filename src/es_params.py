@@ -19,7 +19,7 @@ class ESParams:
     sigma: float  # Initial mutation strength (step size)
     
     # Learning rates for self-adaptive sigma, as per "Mutation (II)" (slide 16)
-    tau_prime: float  # Global learning rate (τ')
+    tau: float    # Learning rate (τ)
     
     # --- Runner Parameters ---
     max_generations: int # Termination criterion: max generations
