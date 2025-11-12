@@ -68,7 +68,7 @@ def plot_boxplots(df: pd.DataFrame, save_path: str):
     
     # --- Prepare data ---
     # Group by function and the *method* (which we've stored in 'strategy')
-    grouped = df.groupby(['function', 'strategy'])
+    grouped = df.groupby(['function', 'dimension', 'strategy'])
     
     labels = []
     data_by_metric = {
@@ -78,8 +78,8 @@ def plot_boxplots(df: pd.DataFrame, save_path: str):
         'success_rate': []
     }
     
-    for (func, strategy), group in grouped:
-        labels.append(f"{func.upper()}\n({strategy})")
+    for (func, dim, strategy), group in grouped:
+        labels.append(f"{func.upper()} (n={dim})\n({strategy})")
         data_by_metric['best_fitness'].append(group['best_fitness'].values)
         data_by_metric['generations'].append(group['generations'].values)
         data_by_metric['function_evals'].append(group['function_evals'].values)

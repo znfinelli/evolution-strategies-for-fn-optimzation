@@ -98,20 +98,26 @@ def main():
     
     # --- Define experiments ---
     es_experiments = [
-        # Sphere (Easy Function) - Elitist vs. Non-Elitist
+        # Sphere 10D
         {'func': 'sphere', 'dim': 10, 'mu': 15, 'lambda': 100, 'strategy': 'plus'},
         {'func': 'sphere', 'dim': 10, 'mu': 15, 'lambda': 100, 'strategy': 'comma'},
         
-        # Rastrigin (Difficult Function) - Elitist vs. Non-Elitist
+        # Rastrigin 10D
         {'func': 'rastrigin', 'dim': 10, 'mu': 20, 'lambda': 140, 'strategy': 'plus'},
         {'func': 'rastrigin', 'dim': 10, 'mu': 20, 'lambda': 140, 'strategy': 'comma'},
+        
+        # As defined in CI_work.pdf (Figure 3 & 4)
+        {'func': 'sphere', 'dim': 20, 'mu': 15, 'lambda': 100, 'strategy': 'comma'},
+        {'func': 'rastrigin', 'dim': 20, 'mu': 30, 'lambda': 200, 'strategy': 'comma'},
     ]
     
     baseline_experiments = [
         {'func': 'sphere', 'dim': 10},
         {'func': 'rastrigin', 'dim': 10},
-    ]
 
+        {'func': 'sphere', 'dim': 20},
+        {'func': 'rastrigin', 'dim': 20},
+    ]
     all_results_list = []
     all_histories_dict = {}
     
@@ -127,7 +133,7 @@ def main():
         )
         all_results_list.append(df)
         
-        key = f"ES_({exp_config['mu']}+{exp_config['lambda']})_{exp_config['func']}"
+        key = f"ES_d{exp_config['dim']}_({exp_config['mu']}+{exp_config['lambda']})_{exp_config['func']}"
         all_histories_dict[key] = histories
         
     # --- 2. Run Baseline Experiments ---
@@ -158,11 +164,22 @@ def main():
     print(f"{'='*80}")
     
     # Convergence plots
+    # Convergence plots
     if all_histories_dict:
+        # Plot for Sphere
+        sphere_hist = {k: v for k, v in all_histories_dict.items() if 'sphere' in k}
         plot_convergence(
-            all_histories_dict,
-            'ES Convergence (Avg. of 30 Runs)',
-            os.path.join(output_dir, 'convergence_plots.png')
+            sphere_hist,
+            'ES Convergence on Sphere (Avg. of 30 Runs)',
+            os.path.join(output_dir, 'convergence_sphere.png')
+        )
+        
+        # Plot for Rastrigin
+        rastrigin_hist = {k: v for k, v in all_histories_dict.items() if 'rastrigin' in k}
+        plot_convergence(
+            rastrigin_hist,
+            'ES Convergence on Rastrigin (Avg. of 30 Runs)',
+            os.path.join(output_dir, 'convergence_rastrigin.png')
         )
     
     # Box plots
